@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import AuthForm from "../Login/authform";
+import AuthForm from "../Login/Authform";
 import Layout from "../Pages/Layout";
 import Dashboard from "../Pages/Dashboard";
 import WorkoutForm from "../Workout/WorkoutForm";
