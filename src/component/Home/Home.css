@@ -1,0 +1,51 @@
+/* Landing Background */
+.landing-bg {
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/041/406/034/small/ai-generated-metal-dumbbells-on-the-floor-in-concept-fitness-room-photo.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+/* Dark overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* Landing content */
+.landing-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 20px;
+}
+
+.landing-content h1 {
+  font-size: 3.2rem;
+  font-weight: 700;
+}
+
+.landing-content h1 span {
+  color: #ffc107;
+}
+
+.landing-content p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #e6e6e6;
+}
+
+/* Button hover */
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
