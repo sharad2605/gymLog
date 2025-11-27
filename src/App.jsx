@@ -9,27 +9,26 @@ import AppRoutes from './component/Routes/Routes.jsx';
 function App() {
   const dispatch = useDispatch();
 
- useEffect(() => {
+useEffect(() => {
   const token = localStorage.getItem("token");
   const email = localStorage.getItem("email");
-  const expirationTime = localStorage.getItem("expirationTime");
+  const userId = localStorage.getItem("userId");
 
   if (token && email) {
     dispatch(login({ token, email }));
 
-    const remainingTime = expirationTime - new Date().getTime();
-    if (remainingTime <= 0) {
-      dispatch(logout());
-      localStorage.clear();
-    } else {
-      setTimeout(() => {
-        dispatch(logout());
-        localStorage.clear();
-        alert("Session expired!");
-      }, remainingTime);
+    // --- LOAD WORKOUT DATA ON REFRESH ---
+    if (userId) {
+      fetch(`https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout/${userId}.json`)
+        .then(res => res.json())
+        .then(data => {
+          const arr = data ? Object.values(data) : [];
+          dispatch(setWorkouts(arr));
+        });
     }
   }
 }, []);
+
 
 
   return (

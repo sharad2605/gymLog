@@ -1,177 +1,172 @@
-  import React, { useState } from "react";
-import { Dropdown } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { addWorkout } from "../../store/workoutSlice";
 
-  const WorkoutForm = () => {
-    const [exercise, setExercise] = useState("");
-    const [sets, setSets] = useState("");
-    const [reps, setReps] = useState("");
-    const [weight, setWeight] = useState("");
-    const [date, setDate] = useState("");
-    const [error, setError] = useState("");
-    const [muscleGroup, setMuscleGroup] = useState("");
-    const workouts = useSelector(state => state.workouts.list);
-    const dispatch = useDispatch();
+const WorkoutForm = () => {
+  const dispatch = useDispatch();
+  const [exercise, setExercise] = useState("");
+  const [sets, setSets] = useState("");
+  const [reps, setReps] = useState("");
+  const [weight, setWeight] = useState("");
+  const [date, setDate] = useState("");
+  const [muscleGroup, setMuscleGroup] = useState("");
+  const [error, setError] = useState("");
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    
-
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!exercise || !sets || !reps || !weight || !date || !muscleGroup) {
-    setError("⚠️ Please fill in all fields before submitting!");
-    return;
-  }
-
-  if (sets <= 0 || reps <= 0 || weight <= 0) {
-    setError("⚠️ Sets, Reps and Weight must be greater than 0!");
-    return;
-  }
-
-  setError("");
-
-  const userEmail = localStorage.getItem("email");
-  const sanitizedEmail = userEmail.replace(/\./g, ",");
-
-  const url = "https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout.json";
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user: sanitizedEmail,
-        muscleGroup,
-        exercise,
-        sets,
-        reps,
-        weight,
-        date
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    // 🔹 Validation
+    if (!exercise || !sets || !reps || !weight || !date || !muscleGroup) {
+      setError("⚠️ Please fill in all fields!");
+      return;
     }
+    if (Number(sets) <= 0 || Number(reps) <= 0 || Number(weight) <= 0) {
+      setError("⚠️ Sets, Reps and Weight must be greater than 0!");
+      return;
+    }
+    setError("");
 
-    const data = await response.json();
-    console.log("Success:", data);
-
-    dispatch(addWorkout({
-      id: data.name,
+    // 🔹 Prepare data
+    const userEmail = localStorage.getItem("email");
+    const sanitizedEmail = userEmail?.replace(/\./g, ",");
+    const payload = {
       user: sanitizedEmail,
       muscleGroup,
       exercise,
-      sets,
-      reps,
-      weight,
-      date
-    }));
+      sets: Number(sets),
+      reps: Number(reps),
+      weight: Number(weight),
+      date,
+    };
 
-    alert("Workout added successfully!");
-  } catch (error) {
-    console.error("🔥 Error:", error);
-  }
+    try {
+      const res = await fetch(
+        "https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout.json",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
-  setExercise("");
-  setSets("");
-  setReps("");
-  setWeight("");
-  setDate("");
-  setMuscleGroup("");
-};
+      if (!res.ok) throw new Error("Network error!");
 
-    
+      const data = await res.json();
 
-    return (
-      <>
-  <h2 className="text-center mt-5 pt-4" >🏋️ Add Workout</h2>
+      // 🔹 Dispatch to Redux
+      dispatch(
+        addWorkout({
+          id: data.name,
+          ...payload,
+        })
+      );
 
-      <form className="mt-4" onSubmit={handleSubmit} >
-        <div className="container mt-5 pt-5 p-4 border bg-light rounded shadow-sm">
-          {/* 🔹 Error Message Display */}
-          {error && (
-            <p className="text-danger text-center fw-bold mb-3">{error}</p>
-          )}
+      alert("✅ Workout added successfully!");
 
-          <div className="mb-3">
-            <label>Choose Muscle Group</label>
-            <select className="form-select" 
-            value={muscleGroup} 
-            onChange={(e) => setMuscleGroup(e.target.value)}>
-              <option value="">Select Muscle Group</option>
-              <option value="Full Body">Full Body</option>
-              <option value="Chest">Chest</option>
-              <option value="Shoulder">Shoulder</option>
-              <option value="Back">Back</option>
-              <option value="Legs">Legs</option>
-              <option value="Arms">Arms</option>
-              <option value="Core">Core</option>
-            </select>
-            
-          </div>
+      // 🔹 Reset form
+      setExercise("");
+      setSets("");
+      setReps("");
+      setWeight("");
+      setDate("");
+      setMuscleGroup("");
+    } catch (err) {
+      console.error("🔥 Error:", err);
+      setError("Failed to add workout. Try again!");
+    }
+  };
 
-          <div className="mb-3">
-            <label>Exercise Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={exercise}
-              onChange={(e) => setExercise(e.target.value)}
-            />
-          </div>
+  return (
+    <div className="max-w-xl mx-auto mt-12 p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold text-center mb-6">🏋️ Add Workout</h2>
 
-          <div className="mb-3">
-            <label>Sets</label>
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Muscle Group */}
+        <div>
+          <label className="block mb-1 font-medium">Muscle Group</label>
+          <select
+            className="w-full border rounded px-3 py-2"
+            value={muscleGroup}
+            onChange={(e) => setMuscleGroup(e.target.value)}
+          >
+            <option value="">Select Muscle Group</option>
+            <option value="Full Body">Full Body</option>
+            <option value="Chest">Chest</option>
+            <option value="Shoulder">Shoulder</option>
+            <option value="Back">Back</option>
+            <option value="Legs">Legs</option>
+            <option value="Arms">Arms</option>
+            <option value="Core">Core</option>
+          </select>
+        </div>
+
+        {/* Exercise */}
+        <div>
+          <label className="block mb-1 font-medium">Exercise</label>
+          <input
+            type="text"
+            className="w-full border rounded px-3 py-2"
+            value={exercise}
+            onChange={(e) => setExercise(e.target.value)}
+          />
+        </div>
+
+        {/* Sets / Reps / Weight */}
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="block mb-1 font-medium">Sets</label>
             <input
               type="number"
-              className="form-control"
-              max={5}
+              className="w-full border rounded px-3 py-2"
               value={sets}
               onChange={(e) => setSets(e.target.value)}
             />
           </div>
-
-          <div className="mb-3">
-            <label>Reps</label>
+          <div>
+            <label className="block mb-1 font-medium">Reps</label>
             <input
               type="number"
-              className="form-control"
+              className="w-full border rounded px-3 py-2"
               value={reps}
               onChange={(e) => setReps(e.target.value)}
             />
           </div>
-
-          <div className="mb-3">
-            <label>Weight (kg)</label>
+          <div>
+            <label className="block mb-1 font-medium">Weight (kg)</label>
             <input
               type="number"
-              className="form-control"
+              className="w-full border rounded px-3 py-2"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
             />
           </div>
-          <div className="mb-3">
-            <label>Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </div>
+        </div>
 
+        {/* Date */}
+        <div>
+          <label className="block mb-1 font-medium">Date</label>
+          <input
+            type="date"
+            className="w-full border rounded px-3 py-2"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
 
-          <div className="text-center">
-            <button type="submit" className="btn btn-primary px-5">
-              Add Workout
-            </button>
-          </div>
+        {/* Submit */}
+        <div className="text-center">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Add Workout
+          </button>
         </div>
       </form>
-      </>
-    );
-  };
+    </div>
+  );
+};
 
-  export default WorkoutForm;
+export default WorkoutForm;

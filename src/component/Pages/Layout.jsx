@@ -1,28 +1,24 @@
 import React from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/authSlice";
+import { Outlet } from "react-router-dom";
+import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
 
 const Layout = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const userEmail = useSelector((state) => state.auth.userEmail);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    localStorage.clear();
-    navigate("/login");
-  };
-
   return (
-    <div>
-      {/* Header */}
-      <Header />
+    <div className="flex bg-gray-100 min-h-screen">
 
-      {/* Page Content */}
-      <div className="container mt-4">
-        <Outlet />
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content (Sidebar width adjusted) */}
+      <div className="flex-1 flex flex-col ml-0 md:ml-64 transition-all">
+
+        <Header />
+
+        <main className="flex-1 p-4 md:p-6 mt-16 md:mt-0">
+          <Outlet />
+        </main>
+
       </div>
     </div>
   );

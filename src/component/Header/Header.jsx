@@ -1,15 +1,25 @@
-import React from "react";
-import { Navbar, Container, Button } from "react-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
+import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const userEmail = useSelector((state) => state.auth.userEmail);
-  const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -17,55 +27,32 @@ const Header = () => {
     navigate("/login");
   };
 
-  // HIDE LOGIN button on login page
-  const onLoginPage = location.pathname === "/login";
-
-  // SHOW Dashboard button on all protected routes
-  const onProtected =
-    location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/add") ||
-    location.pathname.startsWith("/view") ||
-    location.pathname.startsWith("/check") ||
-    location.pathname.startsWith("/progress");
-
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="shadow-sm">
-      <Container>
-        <Navbar.Brand as={Link} to="/" className="fw-bold text-warning fs-3">
-          🏋️ GymLog
-        </Navbar.Brand>
+    <header className="fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white shadow-lg z-50 px-4 flex justify-between items-center">
+      <Link to="/" className="text-2xl font-bold text-yellow-400 no-underline hover:text-yellow-300 transition duration-150">
+        <h1>GymLog</h1>
+    </Link>
 
-        {/* RIGHT SIDE BUTTONS */}
-        {!isLoggedIn ? (
-          !onLoginPage && (
-            <Button variant="outline-light" as={Link} to="/login">
-              Login
-            </Button>
-          )
-        ) : (
-          <div className="d-flex align-items-center">
-            {/* SHOW USER EMAIL ON ALL PROTECTED ROUTES */}
-            {onProtected && <span className="text-white me-3 fw-bold">{userEmail}</span>}
-
-            {/* GO TO DASHBOARD BUTTON ON PROTECTED PAGES */}
-           {isLoggedIn && location.pathname !== "/dashboard" && (
-                <Button
-                  variant="warning"
-                  className="me-3"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Go to Dashboard
-                </Button>
-              )}
-
-            {/* LOGOUT */}
-            <Button variant="outline-light" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        )}
-      </Container>
-    </Navbar>
+      {isLoggedIn && (
+        <div className="flex items-center gap-4">
+          {isMobile && (
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 bg-gray-800 rounded-lg"
+            >
+              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          )}
+          {!isMobile && <span className="font-semibold">{userEmail}</span>}
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </header>
   );
 };
 

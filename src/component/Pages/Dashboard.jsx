@@ -12,26 +12,31 @@ const Dashboard = () => {
   const firebaseUrl =
     "https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout.json";
 
-  // 🔥 Fetch only logged-in user's workouts
   useEffect(() => {
     const loadWorkouts = async () => {
-      const res = await fetch(firebaseUrl);
-      const data = await res.json();
+      try {
+        const res = await fetch(firebaseUrl);
+        const data = await res.json();
 
-      const email = localStorage.getItem("email");
-      const sanitizedEmail = email?.replace(/\./g, ",");
+        const email = localStorage.getItem("email");
+        const sanitizedEmail = email?.replace(/\./g, ",");
 
-      const arr = Object.entries(data || {})
-        .filter(([id, w]) => w.user === sanitizedEmail)
-        .map(([id, w]) => ({ id, ...w }));
+        const arr = Object.entries(data || {})
+          .filter(([id, w]) => w.user === sanitizedEmail)
+          .map(([id, w]) => ({ id, ...w }));
 
-      dispatch(setWorkouts(arr));
-      setLoading(false);
+        dispatch(setWorkouts(arr));
+      } catch (err) {
+        console.error("Error fetching workouts:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadWorkouts();
   }, [dispatch]);
 
+  // 🔹 Streak calculation
   const calculateStreak = (list) => {
     if (!list.length) return 0;
     const dates = [...new Set(list.map((w) => w.date))].sort(
@@ -54,89 +59,57 @@ const Dashboard = () => {
   const highestPR = workouts.length
     ? workouts.reduce((max, curr) => (curr.weight > max.weight ? curr : max))
     : null;
+
   const recentWorkouts = [...workouts]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
+    .slice(0, 3);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center mt-8">Loading...</p>;
 
   return (
-    <div>
-      <h2 className="mb-4">Dashboard</h2>
+    <div className="p-6">
+      <h2 className="text-2xl m-5 font-bold mb-6">Dashboard</h2>
 
-      <div className="row mb-4">
-        <div className="col-md-4 mb-3">
-          <div className="card text-center bg-light shadow-sm p-3" style={{ minHeight: "150px" }}>
-            <h5>🔥 Streak</h5>
-            <h3 className="mt-3">{calculateStreak(workouts)} days</h3>
-          </div>
+      {/* 🔹 Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
+          <h3 className="text-xl font-semibold mb-2">Total Workouts</h3>
+          <p className="text-4xl font-bold text-yellow-400">{totalWorkouts}</p>
         </div>
 
-        <div className="col-md-4 mb-3">
-          <div className="card text-center bg-light shadow-sm p-3" style={{ minHeight: "150px" }}>
-            <h5>🏋️ Personal Record</h5>
-            {highestPR ? (
-              <>
-                <h4 className="mt-2">{highestPR.exercise}</h4>
-                <h3>{highestPR.weight} kg</h3>
-              </>
-            ) : (
-              <h3 className="mt-3">No PR yet</h3>
-            )}
-          </div>
+        <div className="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
+          <h3 className="text-xl font-semibold mb-2">Personal Record</h3>
+          {highestPR ? (
+            <>
+              <p className="text-lg">{highestPR.exercise}</p>
+              <p className="text-3xl font-bold text-yellow-400">{highestPR.weight} kg</p>
+            </>
+          ) : (
+            <p className="text-3xl font-bold text-yellow-400">—</p>
+          )}
         </div>
 
-        <div className="col-md-4 mb-3">
-          <div className="card text-center bg-light shadow-sm p-3" style={{ minHeight: "150px" }}>
-            <h5>📊 Total Workouts</h5>
-            <h3 className="mt-3">{totalWorkouts}</h3>
-          </div>
+        <div className="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
+          <h3 className="text-xl font-semibold mb-2">Streak</h3>
+          <p className="text-4xl font-bold text-yellow-400">{calculateStreak(workouts)} Days</p>
         </div>
       </div>
 
-      <div className="mb-4">
-        <button className="btn btn-primary me-2" onClick={() => navigate("/add")}>
-          Add Workout
-        </button>
-        <button className="btn btn-success me-2" onClick={() => navigate("/view")}>
-          View Workouts
-        </button>
-        <button className="btn btn-warning" onClick={() => navigate("/check")}>
-          Check Progress
-        </button>
-      </div>
+     
 
-      <h5>Recent Workouts</h5>
-      {recentWorkouts.length ? (
-        <div className="table-responsive">
-          <table className="table table-striped table-bordered">
-            <thead className="table-dark">
-              <tr>
-                <th>Date</th>
-                <th>Muscle Group</th>
-                <th>Exercise</th>
-                <th>Sets</th>
-                <th>Reps</th>
-                <th>Weight (kg)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentWorkouts.map((w) => (
-                <tr key={w.id}>
-                  <td>{w.date}</td>
-                  <td>{w.muscleGroup}</td>
-                  <td>{w.exercise}</td>
-                  <td>{w.sets}</td>
-                  <td>{w.reps}</td>
-                  <td>{w.weight}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>No recent workouts 😔</p>
-      )}
+      {/* 🔹 Recent Workouts Table */}
+      <h3 className="text-xl font-semibold mb-3">Recent Workouts</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+      {recentWorkouts.map((w) => (
+    <div key={w.id} className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+      <h3 className="font-bold text-lg">{w.exercise}</h3>
+      <p className="text-sm text-gray-500">{w.muscleGroup}</p>
+      <p>💪 Sets: {w.sets} | Reps: {w.reps} | Weight: {w.weight}kg</p>
+      <p className="text-sm text-gray-400 mt-1">📅 {w.date}</p>
+    </div>
+  ))}
+</div>
     </div>
   );
 };
