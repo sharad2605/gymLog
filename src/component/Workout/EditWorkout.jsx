@@ -8,9 +8,11 @@ const EditWorkout = ({ editData, setEditData, handleUpdate, cancelEdit }) => {
 
         {/* Muscle Group */}
         <select
-          className="w-full mb-3 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full mb-3 p-2 border rounded-lg"
           value={editData.muscleGroup}
-          onChange={(e) => setEditData({ ...editData, muscleGroup: e.target.value })}
+          onChange={(e) =>
+            setEditData({ ...editData, muscleGroup: e.target.value })
+          }
         >
           <option value="">Select Muscle Group</option>
           <option value="Full Body">Full Body</option>
@@ -26,9 +28,11 @@ const EditWorkout = ({ editData, setEditData, handleUpdate, cancelEdit }) => {
         <input
           type="text"
           placeholder="Exercise"
-          className="w-full mb-3 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full mb-3 p-2 border rounded-lg"
           value={editData.exercise}
-          onChange={(e) => setEditData({ ...editData, exercise: e.target.value })}
+          onChange={(e) =>
+            setEditData({ ...editData, exercise: e.target.value })
+          }
         />
 
         {/* Sets / Reps / Weight */}
@@ -36,44 +40,52 @@ const EditWorkout = ({ editData, setEditData, handleUpdate, cancelEdit }) => {
           <input
             type="number"
             placeholder="Sets"
-            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 border rounded-lg"
             value={editData.sets}
-            onChange={(e) => setEditData({ ...editData, sets: e.target.value })}
+            onChange={(e) =>
+              setEditData({ ...editData, sets: e.target.value })
+            }
           />
           <input
             type="number"
             placeholder="Reps"
-            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 border rounded-lg"
             value={editData.reps}
-            onChange={(e) => setEditData({ ...editData, reps: e.target.value })}
+            onChange={(e) =>
+              setEditData({ ...editData, reps: e.target.value })
+            }
           />
           <input
             type="number"
             placeholder="Weight (kg)"
-            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 border rounded-lg"
             value={editData.weight}
-            onChange={(e) => setEditData({ ...editData, weight: e.target.value })}
+            onChange={(e) =>
+              setEditData({ ...editData, weight: e.target.value })
+            }
           />
         </div>
 
         {/* Date */}
         <input
           type="date"
-          className="w-full mb-5 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full mb-5 p-2 border rounded-lg"
           value={editData.date}
-          onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+          onChange={(e) =>
+            setEditData({ ...editData, date: e.target.value })
+          }
         />
 
         {/* Buttons */}
         <div className="flex justify-center gap-4">
           <button
-            className="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition font-semibold"
+            className="bg-green-600 text-white px-5 py-2 rounded-xl"
             onClick={handleUpdate}
           >
             ✅ Update
           </button>
           <button
-            className="bg-gray-400 text-white px-5 py-2 rounded-xl hover:bg-gray-500 transition font-semibold"
+            className="bg-gray-400 text-white px-5 py-2 rounded-xl"
             onClick={cancelEdit}
           >
             Cancel

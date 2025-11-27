@@ -7,15 +7,15 @@ import { setWorkouts } from "../../store/workoutSlice";
 
 
 // Example icons (replace with SVG or image URLs)
-// const muscleIcons = {
-//   Chest:  "/images/chest.png",
-//   Back: "https://cdn-icons-png.flaticon.com/512/1234/back.png",
-//   Legs: "https://cdn-icons-png.flaticon.com/512/1234/legs.png",
-//   Arms: "https://cdn-icons-png.flaticon.com/512/1234/arms.png",
-//   Shoulders: "https://cdn-icons-png.flaticon.com/512/1234/shoulders.png",
-//   Core: "https://cdn-icons-png.flaticon.com/512/1234/core.png",
-//   FullBody: "https://cdn-icons-png.flaticon.com/512/1234/fullbody.png",
-// };
+const muscleIcons = {
+  Chest:  "/images/muscle/Chest.png",
+  Back: "/images/muscle/Back.png",
+  Legs: "/images/muscle/Legs.png",
+  Arms: "/images/muscle/Arms.png",
+  Shoulders: "/images/muscle/Shoulders.png",
+  Core: "/images/muscle/Core.png",
+  FullBody: "/images/muscle/fullBody.png",
+};
 
 const History = () => {
   const allworkout = useSelector(state => state.workouts.list);
@@ -49,7 +49,11 @@ const History = () => {
             className="group cursor-pointer bg-white rounded-2xl shadow-md hover:shadow-xl p-6 flex flex-col items-center transition"
             onClick={() => handleGroupClick(group)}
           >
-            {/* <div className="text-6xl mb-4">{muscleIcons[group] || "💪"}</div> */}
+            <img
+              src={muscleIcons[group] || "💪"} // Fallback to emoji if path is missing
+              alt={`${group} Icon`}
+              className="w-16 h-16 mb-4 object-contain" // Set a specific size for the image
+            />
             <h3 className="text-xl font-semibold mb-2">{group}</h3>
             <p className="text-gray-500 font-medium">🔥 PR: {getPR(group)} kg</p>
           </div>

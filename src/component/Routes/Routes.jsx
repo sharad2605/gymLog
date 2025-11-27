@@ -12,6 +12,7 @@ import History from "../History/History";
 import ViewHistory from "../History/ViewHistory";
 import Home from "../Home/Home";
 import AiFitness from "../AI/AiFitness";
+import Header from "../Header/Header";
 
 const AppRoutes = () => {
   const dispatch = useDispatch();
@@ -34,11 +35,13 @@ const AppRoutes = () => {
   };
 
   return (
+   <>
+      <Header />
     <Routes>
-
+     
       {/* PUBLIC ROUTES */}
       <Route path="/" element={<Home />} />
-
+      
       <Route
         path="/login"
         element={!token ? <AuthForm /> : <Navigate to="/dashboard" />}
@@ -64,6 +67,7 @@ const AppRoutes = () => {
       {/* FALLBACK */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
+    </>
   );
 };
 

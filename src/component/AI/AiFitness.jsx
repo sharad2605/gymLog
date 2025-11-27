@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import toast from 'react-hot-toast';
 
 
 const AiFitness = () => {
@@ -11,7 +13,7 @@ const AiFitness = () => {
 
   const getAIPlan = async () => {
     if (!height || !weight || !age || !goal) {
-      alert("Please fill in all fields (height, weight, age, and goal).");
+      toast.error("⚠️ Please fill in all fields (height, weight, age, and goal).");
       return;
     }
 
@@ -56,7 +58,7 @@ const AiFitness = () => {
           }),
         }
       );
-
+      <ReactMarkdown>{response.replace(/\*\*\*/g, '**')}</ReactMarkdown>
       if (!res.ok) {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
@@ -135,8 +137,9 @@ const AiFitness = () => {
       ✅ Your Fitness Plan
     </h2>
     <div className="text-gray-800 leading-relaxed text-sm max-h-64 overflow-y-auto">
-      
+      <ReactMarkdown>{response.replace(/\*\*\*/g, '**')}</ReactMarkdown>
     </div>
+    
   </div>
 )}
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addWorkout } from "../../store/workoutSlice";
+import toast from "react-hot-toast";
 
 const WorkoutForm = () => {
   const dispatch = useDispatch();
@@ -10,23 +11,21 @@ const WorkoutForm = () => {
   const [weight, setWeight] = useState("");
   const [date, setDate] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔹 Validation
+    // Validation
     if (!exercise || !sets || !reps || !weight || !date || !muscleGroup) {
-      setError("⚠️ Please fill in all fields!");
+      toast.error(" Please fill in all fields!");
       return;
     }
     if (Number(sets) <= 0 || Number(reps) <= 0 || Number(weight) <= 0) {
-      setError("⚠️ Sets, Reps and Weight must be greater than 0!");
+      toast.error(" Sets, Reps and Weight must be greater than 0!");
       return;
     }
-    setError("");
 
-    // 🔹 Prepare data
+    // Prepare data
     const userEmail = localStorage.getItem("email");
     const sanitizedEmail = userEmail?.replace(/\./g, ",");
     const payload = {
@@ -53,17 +52,12 @@ const WorkoutForm = () => {
 
       const data = await res.json();
 
-      // 🔹 Dispatch to Redux
-      dispatch(
-        addWorkout({
-          id: data.name,
-          ...payload,
-        })
-      );
+      // Dispatch to Redux
+      dispatch(addWorkout({ id: data.name, ...payload }));
 
-      alert("✅ Workout added successfully!");
+      toast.success("Workout added successfully!");
 
-      // 🔹 Reset form
+      // Reset form
       setExercise("");
       setSets("");
       setReps("");
@@ -72,7 +66,7 @@ const WorkoutForm = () => {
       setMuscleGroup("");
     } catch (err) {
       console.error("🔥 Error:", err);
-      setError("Failed to add workout. Try again!");
+      toast.error("Failed to add workout. Try again!");
     }
   };
 
@@ -80,9 +74,8 @@ const WorkoutForm = () => {
     <div className="max-w-xl mx-auto mt-12 p-6 bg-white rounded-xl shadow-md">
       <h2 className="text-2xl font-bold text-center mb-6">🏋️ Add Workout</h2>
 
-      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-
       <form onSubmit={handleSubmit} className="space-y-4">
+        
         {/* Muscle Group */}
         <div>
           <label className="block mb-1 font-medium">Muscle Group</label>
@@ -124,6 +117,7 @@ const WorkoutForm = () => {
               onChange={(e) => setSets(e.target.value)}
             />
           </div>
+
           <div>
             <label className="block mb-1 font-medium">Reps</label>
             <input
@@ -133,6 +127,7 @@ const WorkoutForm = () => {
               onChange={(e) => setReps(e.target.value)}
             />
           </div>
+
           <div>
             <label className="block mb-1 font-medium">Weight (kg)</label>
             <input

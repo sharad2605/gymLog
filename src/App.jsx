@@ -1,39 +1,64 @@
-import React, { useEffect } from 'react';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { setWorkouts } from './store/workoutSlice.jsx';
-import { login, logout } from './store/authSlice.jsx';
-import AppRoutes from './component/Routes/Routes.jsx';
+import { useDispatch } from "react-redux";
+import { setWorkouts } from "./store/workoutSlice";
+import { login, logout } from "./store/authSlice";
+import AppRoutes from "./component/Routes/Routes";
+import {Toaster} from "react-hot-toast";
 
 function App() {
   const dispatch = useDispatch();
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
-  const email = localStorage.getItem("email");
-  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const email = localStorage.getItem("email");
+    const expirationTimeStr = localStorage.getItem("expirationTime");
 
-  if (token && email) {
-    dispatch(login({ token, email }));
+    if (token && email) {
+      // parse expiration
+      const expirationTime = expirationTimeStr ? parseInt(expirationTimeStr, 10) : null;
+      dispatch(login({ token, email }));
 
-    // --- LOAD WORKOUT DATA ON REFRESH ---
-    if (userId) {
-      fetch(`https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout/${userId}.json`)
-        .then(res => res.json())
-        .then(data => {
-          const arr = data ? Object.values(data) : [];
+      if (expirationTime) {
+        const remaining = expirationTime - Date.now();
+        if (remaining <= 0) {
+          dispatch(logout());
+          localStorage.removeItem("token");
+          localStorage.removeItem("email");
+          localStorage.removeItem("expirationTime");
+        } else {
+          setTimeout(() => {
+            dispatch(logout());
+            localStorage.removeItem("token");
+            localStorage.removeItem("email");
+            localStorage.removeItem("expirationTime");
+            toast.error("Session expired!");
+          }, remaining);
+        }
+      }
+
+      // Load workouts — fetch whole addworkout and filter by sanitized email
+      (async () => {
+        try {
+          const res = await fetch("https://gymlog-46d79-default-rtdb.firebaseio.com/addworkout.json");
+          const data = await res.json();
+          const sanitized = email.replace(/\./g, ",");
+          const arr = Object.entries(data || {})
+            .filter(([id, w]) => w.user === sanitized)
+            .map(([id, w]) => ({ id, ...w }));
           dispatch(setWorkouts(arr));
-        });
+        } catch (err) {
+          console.error("Error loading workouts:", err);
+        }
+      })();
     }
-  }
-}, []);
-
-
+  }, [dispatch]);
 
   return (
     <Router>
       <AppRoutes />
+       <Toaster position="top-center" />
     </Router>
   );
 }
