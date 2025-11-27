@@ -122,56 +122,63 @@ const WorkoutList = () => {
 
       {/* Workout Table */}
       {filtered.length ? (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse shadow-md rounded-xl overflow-hidden">
-            <thead className="bg-gray-900 text-white">
-              <tr>
-                <th className="p-3 border">Exercise</th>
-                <th className="p-3 border">Muscle</th>
-                <th className="p-3 border">Sets × Reps</th>
-                <th className="p-3 border">Weight</th>
-                <th className="p-3 border">Date</th>
-                <th className="p-3 border">Actions</th>
-              </tr>
-            </thead>
+       <div className="overflow-x-auto w-full border rounded-xl shadow-sm">
+  <table className="min-w-max w-full border-collapse text-sm sm:text-base">
+    <thead className="bg-gray-900 text-white">
+      <tr>
+        <th className="p-3 border text-left">Exercise</th>
+        <th className="p-3 border text-left">Muscle</th>
+        <th className="p-3 border text-left">Sets × Reps</th>
+        <th className="p-3 border text-left">Weight</th>
+        <th className="p-3 border text-left whitespace-nowrap">Date</th>
+        <th className="p-3 border text-left">Actions</th>
+      </tr>
+    </thead>
 
-            <tbody>
-              {current.map((w) => (
-                <tr key={w.id} className="hover:bg-gray-100">
-                  <td className="p-3 border">{w.exercise}</td>
-                  <td className="p-3 border">{w.muscleGroup}</td>
-                  <td className="p-3 border">{w.sets} × {w.reps}</td>
-                  <td className="p-3 border">{w.weight}kg</td>
-                  <td className="p-3 border">{w.date}</td>
-                  <td className="p-3 border flex gap-2">
-                    <button
-                      className="bg-yellow-400 px-3 py-1 rounded text-white"
-                      onClick={() => handleEdit(w)}
-                    >
-                      Edit
-                    </button>
+    <tbody>
+      {current.map((w) => (
+        <tr
+          key={w.id}
+          className="hover:bg-gray-100 border-b odd:bg-gray-50"
+        >
+          <td className="p-3 border">{w.exercise}</td>
+          <td className="p-3 border">{w.muscleGroup}</td>
+          <td className="p-3 border whitespace-nowrap">
+            {w.sets} × {w.reps}
+          </td>
+          <td className="p-3 border whitespace-nowrap">{w.weight} kg</td>
+          <td className="p-3 border whitespace-nowrap">{w.date}</td>
 
-                    <button
-                      className="bg-red-500 px-3 py-1 rounded text-white"
-                      onClick={() => setConfirmDelete(w.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <td className="p-3 border flex gap-2">
+            <button
+              className="bg-yellow-400 px-3 py-1 rounded text-black"
+              onClick={() => handleEdit(w)}
+            >
+              Edit
+            </button>
 
-          {filtered.length >= perPage && (
-            <Pagination
-              total={filtered.length}
-              perPage={perPage}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          )}
-        </div>
+            <button
+              className="bg-red-500 px-3 py-1 rounded text-white"
+              onClick={() => setConfirmDelete(w.id)}
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {filtered.length >= perPage && (
+    <Pagination
+      total={filtered.length}
+      perPage={perPage}
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
+    />
+  )}
+</div>
+
       ) : (
         <p className="text-center text-gray-500 text-lg mt-10">No workouts found 😔</p>
       )}
