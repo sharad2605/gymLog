@@ -15,6 +15,8 @@ const WorkoutForm = () => {
   const [date, setDate] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("");
 
+  const today = new Date().toISOString().split("T")[0];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,7 +78,7 @@ const WorkoutForm = () => {
             onChange={(e) => setMuscleGroup(e.target.value)}
           >
             <option value="">Select Muscle Group</option>
-            <option value="Full Body">Full Body</option>
+            <option value="FullBody">Full Body</option>
             <option value="Chest">Chest</option>
             <option value="Shoulder">Shoulder</option>
             <option value="Back">Back</option>
@@ -137,6 +139,7 @@ const WorkoutForm = () => {
             type="date"
             className="w-full border dark:border-gray-400 rounded px-3 py-2"
             value={date}
+            max={today}
             onChange={(e) => setDate(e.target.value)}
           />
         </div>

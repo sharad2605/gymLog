@@ -46,9 +46,11 @@ const Authform = () => {
       if (data.error) throw new Error(data.error.message);
 
       if (!isLogin) {
-        
+        setIsLogin(true);
         toast.success(" Account created. Please login.");
         reset();
+       
+        
         return;
       }
       else {

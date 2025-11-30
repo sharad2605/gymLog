@@ -14,7 +14,7 @@ const muscleIcons = {
   Arms: "/images/muscle/Arms.png",
   Shoulder: "/images/muscle/Shoulder.png",
   Core: "/images/muscle/Core.png",
-  FullBody: "/images/muscle/fullBody.png",
+  FullBody: "/images/muscle/fullbody.png",
 };
 
 const History = () => {
