@@ -12,7 +12,7 @@ const muscleIcons = {
   Back: "/images/muscle/Back.png",
   Legs: "/images/muscle/Legs.png",
   Arms: "/images/muscle/Arms.png",
-  Shoulder: "/images/muscle/Shoulder.png",
+  Shoulder: "/images/muscle/Shoulder1.png",
   Core: "/images/muscle/Core.png",
   FullBody: "/images/muscle/fullBody.png",
 };
