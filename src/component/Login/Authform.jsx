@@ -60,8 +60,8 @@ const Authform = () => {
       localStorage.setItem("token", data.idToken);
       localStorage.setItem("email", data.email);
 
-      // set expiration 1 hour from now (ms)
-      const expirationTime = Date.now() + 60 * 60 * 1000;
+      // set expiration 30 minutes from now (ms)
+      const expirationTime = Date.now() + 30 * 60 * 1000;
       localStorage.setItem("expirationTime", expirationTime.toString());
 
       navigate("/dashboard");

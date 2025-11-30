@@ -105,8 +105,8 @@ const Dashboard = () => {
     <div key={w.id} className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
       <h3 className="font-bold text-lg">{w.exercise}</h3>
       <p className="text-sm text-gray-500">{w.muscleGroup}</p>
-      <p>💪 Sets: {w.sets} | Reps: {w.reps} | Weight: {w.weight}kg</p>
-      <p className="text-sm text-gray-400 mt-1">📅 {w.date}</p>
+      <p> Sets: {w.sets} | Reps: {w.reps} | Weight: {w.weight}kg</p>
+      <p className="text-sm text-gray-400 mt-1"> {w.date}</p>
     </div>
   ))}
 </div>

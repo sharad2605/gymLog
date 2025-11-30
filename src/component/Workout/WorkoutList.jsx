@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWorkouts, deleteWorkout, updateWorkout } from "../../store/workoutSlice";
 import EditWorkout from "./EditWorkout";
 import Pagination from "./Pagination";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const WorkoutList = () => {
   const dispatch = useDispatch();
   const workouts = useSelector((state) => state.workouts.list);
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [editId, setEditId] = useState(null);
@@ -110,7 +112,7 @@ const WorkoutList = () => {
       <h2 className="text-3xl font-bold text-center mb-10 mt-10">📈 Workout Progress</h2>
 
       {/* Search */}
-      <div className="flex justify-end mb-8">
+      <div className="flex justify-between mb-8">
         <input
           type="text"
           value={search}
@@ -118,66 +120,109 @@ const WorkoutList = () => {
           placeholder="Search workouts..."
           className="p-3 pl-10 w-full max-w-sm rounded-xl border border-gray-800 shadow"
         />
+
+        <button
+          onClick={() => navigate("/workouts/add")}
+          className="bg-green-600 text-white px-5 py-2 rounded-xl shadow hover:bg-green-700 transition-all"
+        >
+          Add Workout
+        </button>
       </div>
 
       {/* Workout Table */}
       {filtered.length ? (
-       <div className="overflow-x-auto w-full border rounded-xl shadow-sm">
-  <table className="min-w-max w-full border-collapse text-sm sm:text-base">
-    <thead className="bg-gray-900 text-white">
-      <tr>
-        <th className="p-3 border text-left">Exercise</th>
-        <th className="p-3 border text-left">Muscle</th>
-        <th className="p-3 border text-left">Sets × Reps</th>
-        <th className="p-3 border text-left">Weight</th>
-        <th className="p-3 border text-left whitespace-nowrap">Date</th>
-        <th className="p-3 border text-left">Actions</th>
-      </tr>
-    </thead>
+       <div className="w-full overflow-hidden rounded-xl border shadow-sm">
 
-    <tbody>
-      {current.map((w) => (
-        <tr
-          key={w.id}
-          className="hover:bg-gray-100 border-b odd:bg-gray-50"
-        >
-          <td className="p-3 border">{w.exercise}</td>
-          <td className="p-3 border">{w.muscleGroup}</td>
-          <td className="p-3 border whitespace-nowrap">
-            {w.sets} × {w.reps}
-          </td>
-          <td className="p-3 border whitespace-nowrap">{w.weight} kg</td>
-          <td className="p-3 border whitespace-nowrap">{w.date}</td>
-
-          <td className="p-3 border flex gap-2">
-            <button
-              className="bg-yellow-400 px-3 py-1 rounded text-black"
-              onClick={() => handleEdit(w)}
-            >
-              Edit
-            </button>
-
-            <button
-              className="bg-red-500 px-3 py-1 rounded text-white"
-              onClick={() => setConfirmDelete(w.id)}
-            >
-              Delete
-            </button>
-          </td>
+  {/* DESKTOP TABLE */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="w-full border-collapse">
+      <thead className="bg-gray-900 text-white">
+        <tr>
+          <th className="p-3 border text-left">Exercise</th>
+          <th className="p-3 border text-left">Muscle</th>
+          <th className="p-3 border text-left">Sets × Reps</th>
+          <th className="p-3 border text-left">Weight</th>
+          <th className="p-3 border text-left">Date</th>
+          <th className="p-3 border text-left">Actions</th>
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
 
-  {filtered.length >= perPage && (
-    <Pagination
-      total={filtered.length}
-      perPage={perPage}
-      currentPage={currentPage}
-      onPageChange={handlePageChange}
-    />
-  )}
+      <tbody>
+        {current.map((w) => (
+          <tr key={w.id} className="hover:bg-gray-100 border-b odd:bg-gray-50">
+            <td className="p-3 border">{w.exercise}</td>
+            <td className="p-3 border">{w.muscleGroup}</td>
+            <td className="p-3 border">{w.sets} × {w.reps}</td>
+            <td className="p-3 border">{w.weight} kg</td>
+            <td className="p-3 border">{w.date}</td>
+            <td className="p-3 border">
+              <div className="flex gap-2">
+                <button
+                  className="bg-yellow-400 px-3 py-1 rounded text-black"
+                  onClick={() => handleEdit(w)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 px-3 py-1 rounded text-white"
+                  onClick={() => setConfirmDelete(w.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Pagination */}
+{filtered.length > perPage && (
+  <Pagination
+    total={filtered.length}
+    perPage={perPage}
+    currentPage={currentPage}
+    onPageChange={handlePageChange}
+  />
+)}
+
+  {/* MOBILE CARD VIEW */}
+  <div className="md:hidden space-y-4 p-2">
+    {current.map((w) => (
+      <div key={w.id} className="bg-white border rounded-xl p-4 shadow-sm">
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-lg">{w.exercise}</h3>
+          <span className="text-xs bg-gray-900 text-white px-2 py-1 rounded">
+            {w.muscleGroup}
+          </span>
+        </div>
+
+        <div className="mt-2 text-gray-700">
+          <p><b>Sets × Reps:</b> {w.sets} × {w.reps}</p>
+          <p><b>Weight:</b> {w.weight} kg</p>
+          <p className="text-gray-500 text-sm">{w.date}</p>
+        </div>
+
+        <div className="flex gap-3 mt-4">
+          <button
+            className="w-full bg-yellow-400 px-3 py-2 rounded text-black"
+            onClick={() => handleEdit(w)}
+          >
+            Edit
+          </button>
+          <button
+            className="w-full bg-red-500 px-3 py-2 rounded text-white"
+            onClick={() => setConfirmDelete(w.id)}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
 </div>
+
 
       ) : (
         <p className="text-center text-gray-500 text-lg mt-10">No workouts found 😔</p>

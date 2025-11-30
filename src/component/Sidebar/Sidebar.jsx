@@ -16,10 +16,9 @@ const Sidebar = ({ open, setOpen, isMobile }) => {
 
   const links = [
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Add Workout", path: "/add" },
-    { name: "Workout List", path: "/view" },
+    { name: "Workouts", path: "/workouts" },
     { name: "History", path: "/history" },
-    { name: "AI Fitness Coach", path: "/ai-fitness", icon: <BrainCircuit size={16} className="inline-block mb-1 mr-2" /> },
+    { name: "AI Fitness Coach", path: "/ai-fitness"  },
   ];
 
   const handleLogout = () => {

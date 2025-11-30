@@ -12,7 +12,7 @@ const muscleIcons = {
   Back: "/images/muscle/Back.png",
   Legs: "/images/muscle/Legs.png",
   Arms: "/images/muscle/Arms.png",
-  Shoulders: "/images/muscle/Shoulders.png",
+  Shoulder: "/images/muscle/Shoulder.png",
   Core: "/images/muscle/Core.png",
   FullBody: "/images/muscle/fullBody.png",
 };
@@ -61,50 +61,52 @@ const History = () => {
       </div>
 
       {/* HISTORY MODAL */}
-      {showHistory && (
-        <div
-          className="fixed inset-0 bg-black/40 flex justify-center items-start z-50 overflow-y-auto pt-24"
-          onClick={() => setShowHistory(false)}
-        >
-          <div
-            className="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-2xl font-bold mb-4">{selectedGroup} — History</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto border-collapse">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="p-3 border border-gray-300">Date</th>
-                    <th className="p-3 border border-gray-300">Exercise</th>
-                    <th className="p-3 border border-gray-300">Sets</th>
-                    <th className="p-3 border border-gray-300">Reps</th>
-                    <th className="p-3 border border-gray-300">Weight (kg)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historyData.map((h, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="p-2 border border-gray-300">{h.date}</td>
-                      <td className="p-2 border border-gray-300">{h.exercise}</td>
-                      <td className="p-2 border border-gray-300">{h.sets}</td>
-                      <td className="p-2 border border-gray-300">{h.reps}</td>
-                      <td className="p-2 border border-gray-300">{h.weight}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      
+{showHistory && (
+  <div
+    className="fixed inset-0 bg-black/40 flex justify-center items-start z-50 overflow-y-auto pt-6 sm:pt-24"
+    onClick={() => setShowHistory(false)}
+  >
+    <div
+      className="bg-white rounded-xl shadow-xl max-w-3xl w-full p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h3 className="text-2xl font-bold mb-4">{selectedGroup} — History</h3>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto border-collapse">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-3 border border-gray-300">Date</th>
+              <th className="p-3 border border-gray-300">Exercise</th>
+              <th className="p-3 border border-gray-300">Sets</th>
+              <th className="p-3 border border-gray-300">Reps</th>
+              <th className="p-3 border border-gray-300">Weight (kg)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {historyData.map((h, i) => (
+              <tr key={i} className="hover:bg-gray-50">
+                <td className="p-2 border border-gray-300">{h.date}</td>
+                <td className="p-2 border border-gray-300">{h.exercise}</td>
+                <td className="p-2 border border-gray-300">{h.sets}</td>
+                <td className="p-2 border border-gray-300">{h.reps}</td>
+                <td className="p-2 border border-gray-300">{h.weight}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-            <button
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              onClick={() => setShowHistory(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <button
+        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        onClick={() => setShowHistory(false)}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

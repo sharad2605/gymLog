@@ -56,8 +56,8 @@ const AppRoutes = () => {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/add" element={<WorkoutForm />} />
-        <Route path="/view" element={<WorkoutList />} />
+        <Route path="/workouts/add" element={<WorkoutForm />} />
+        <Route path="/workouts" element={<WorkoutList />} />
         <Route path="/history" element={<History />} />
         <Route path="/history/:group" element={<ViewHistory />} />
         <Route path="/ai-fitness" element={<AiFitness />} />
