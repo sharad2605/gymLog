@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { setWorkouts } from "./store/workoutSlice";
 import { login, logout } from "./store/authSlice";
 import AppRoutes from "./component/Routes/Routes";
-import {Toaster} from "react-hot-toast";
+import {Toaster , toast} from "react-hot-toast";
 
 function App() {
   const dispatch = useDispatch();
